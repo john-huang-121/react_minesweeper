@@ -68,7 +68,9 @@ class Board extends React.Component {
 
 
       //Reset board if first cell opened is a mine, then open the new board.
-      if (current.hasMine && this.props.openCells === 0) {
+      if (this.props.status === 'lost') {
+        //currently no code, freeze state so no more button clicks
+      } else if (current.hasMine && this.props.openCells === 0) {
         console.log('cell already has mine. Restart!');
         let newRows = this.createBoard(this.props);
 
@@ -160,6 +162,7 @@ class Board extends React.Component {
           key={index}
           cells={row}
           open={this.open}
+
           />
       );
     });

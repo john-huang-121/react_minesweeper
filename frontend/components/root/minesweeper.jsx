@@ -46,7 +46,7 @@ class Minesweeper extends React.Component {
       });
     }
 
-    //starts the timer by increasing openCells from 0 to 1
+    //starts the timer by increasing openCells
     this.setState(previousState => {
       return { openCells: previousState.openCells + 1 };
     });
@@ -55,7 +55,7 @@ class Minesweeper extends React.Component {
 
   loseGame() {
     this.setState({ status: 'lost' }, () => {
-      
+
     });
   }
 
@@ -68,6 +68,7 @@ class Minesweeper extends React.Component {
           columns={this.state.columns}
           mines={this.state.mines}
           openCells={this.state.openCells}
+          status={this.state.status}
           openCellClick={this.handleCellClick}
           loseGame={this.loseGame}
         />
