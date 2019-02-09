@@ -1,0 +1,64 @@
+/* 1:17:27 */
+body {
+  margin: 0px;
+}
+
+.game-browser {
+  width: 500px;
+  height: 100%;
+  border: 1px solid black;
+  border-bottom: none;
+  margin: calc((100vh - 635px)/2) calc((100vw - 500px)/2);
+}
+
+.game-title {
+  text-align: center;
+}
+
+.board-head {
+  display: flex;
+  flex-direction: row;
+  height: 55px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reset, .flag-count, .timer {
+  width: 55px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  height: 500px;
+  border: 1px solid black;
+  border-left: none;
+  border-right: none;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+}
+
+.cell:hover {
+  background-color: lightgray;
+}
+
+.open {
+  background-color: lightgray;
+}
