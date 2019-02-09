@@ -55,6 +55,7 @@ class Board extends React.Component {
   //A click on the cell with a mine loses the game. If not, it opens. Squares next to the opened tile
   //shows total number of mines. If adjacent cells have no mines, open it and check for info.
   open(cell) {
+    // eslint-disable-next-line no-undef
     let asyncCountMines = new Promise(resolve => {
       let mines = this.findMines(cell);
       resolve(mines); //promise will resolve the mines
@@ -78,7 +79,7 @@ class Board extends React.Component {
         });
 
       } else if (current.hasMine) {
-        
+
         current.isOpen = true;
         this.props.loseGame();
       
