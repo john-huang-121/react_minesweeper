@@ -6,7 +6,7 @@ class Minesweeper extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: 'waiting', //waiting, running, lost, won
+      status: 'waiting', //waiting, running, lost, won, reset
       rows: 10,
       columns: 10,
       flags: 10,
@@ -20,6 +20,7 @@ class Minesweeper extends React.Component {
     this.setInterval = this.setInterval.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.loseGame = this.loseGame.bind(this);
+    this.resetGame = this.resetGame.bind(this);
   }
 
   componentDidMount() {
@@ -59,11 +60,26 @@ class Minesweeper extends React.Component {
     });
   }
 
+  resetGame() {
+    this.setState({
+      status: 'waiting',
+      rows: 10,
+      columns: 10,
+      flags: 10,
+      mines: 10,
+      time: 0,
+      openCells: 0,
+    }, () => console.log(this.state));
+  }
+
   render() {
     return (
       <div className='game-browser'>
         <h1 className='game-title'>Minesweeper</h1>
-        <BoardHead time={this.state.time} flagCount={this.state.flags} />
+        <BoardHead time={this.state.time} 
+          flagCount={this.state.flags}
+          resetGame={this.resetGame}
+        />
         <Board rows={this.state.rows}
           columns={this.state.columns}
           mines={this.state.mines}

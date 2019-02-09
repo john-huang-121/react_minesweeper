@@ -52,6 +52,17 @@ class Board extends React.Component {
     return board;
   }
 
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.props.openCells > nextProps.openCells ||
+      this.props.columns !== nextProps.columns
+    ) {
+      this.setState({
+        rows: this.createBoard(nextProps)
+      });
+    }
+  }
   //A click on the cell with a mine loses the game. If not, it opens. Squares next to the opened tile
   //shows total number of mines. If adjacent cells have no mines, open it and check for info.
   open(cell) {
