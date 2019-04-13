@@ -1,6 +1,6 @@
 # React Minesweeper
 
-[Live Link](https://coconutman19.github.io/react_minesweeper/)
+[Live Link](https://john-huang-121.github.io/react_minesweeper/)
 
 ## Description
 A classic game of minesweeper written purely with ReactJS.
