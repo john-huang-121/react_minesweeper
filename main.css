@@ -3,12 +3,23 @@ body {
   margin: 0px;
 }
 
+.game-background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background: url("stijn-swinnen-259744-unsplash.jpg") no-repeat;
+  background-size: cover;
+}
+
 .game-browser {
+  height: 640px;
   width: 500px;
-  height: 100%;
+  padding: 10px;
   border: 1px solid black;
-  border-bottom: none;
-  margin: calc((100vh - 635px)/2) calc((100vw - 500px)/2);
+  border-radius: 10px;
+  background: linear-gradient(tan, sandybrown);
 }
 
 .game-title {
@@ -23,12 +34,26 @@ body {
   align-items: center;
 }
 
-.reset, .flag-count, .timer {
-  width: 55px;
+.flag-count, .timer {
+  width: 70px;
   height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  background: black;
+  color: #ff0100;
+  font-weight: bolder;
+  font-size: 25px;
+}
+
+.reset {
+  width: 55px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
 }
 
 .board {
@@ -36,9 +61,6 @@ body {
   flex-direction: column;
   width: 500px;
   height: 500px;
-  border: 1px solid black;
-  border-left: none;
-  border-right: none;
 }
 
 .row {
@@ -56,9 +78,35 @@ body {
 }
 
 .cell:hover {
-  background-color: lightgray;
+  background-color: lightgrey;
 }
 
 .open {
-  background-color: lightgray;
+  background-color: green;
+}
+
+.mine-pic {
+  background-color: red;
+  background-image: url("kisspng-minesweeper-pro-classic-mine-sweeper-minesweeper-p-bomb-5ab792140a25f3.7511206815219799240416.png");
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.count {
+  color: white;
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.flag {
+  background-color: aquamarine;
+}
+
+.flag-pic {
+  background-image: url("kisspng-red-flag-clip-art-free-flag-clipart-5aaaa05caee9f3.7794532215211316127165.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 70%;
+  height: 90%;
 }

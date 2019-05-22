@@ -12,13 +12,13 @@ const Cell = (props) => {
         );
       } else if (props.data.hasMine) {
         return (
-          <div className="cell open" onMouseDown={(e) => props.openOrFlag(props.data)}>
-            <p>M</p>
+          <div className="cell" onMouseDown={(e) => props.openOrFlag(props.data)}>
+            <div className='mine-pic' />
           </div>
         );
       } else {
         return (
-          <div className="cell open" onMouseDown={(e) => props.openOrFlag(props.data)}>
+          <div className="cell open count" onMouseDown={(e) => props.openOrFlag(props.data)}>
             {props.data.count}
           </div>
         );
@@ -26,8 +26,8 @@ const Cell = (props) => {
     } else {
       if (props.data.hasFlag) {
         return (
-          <div className="cell" onMouseDown={(e) => props.openOrFlag(props.data)}>
-            <p>F</p>
+          <div className="cell flag" onMouseDown={(e) => props.openOrFlag(props.data)}>
+            <div className='flag-pic' />
           </div>
         );
       } else {

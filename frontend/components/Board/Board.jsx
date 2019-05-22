@@ -50,17 +50,12 @@ class Board extends React.Component {
     return board;
   }
 
-
   componentWillReceiveProps(nextProps) {
-    if (
-      this.props.openCells > nextProps.openCells ||
-      this.props.columns !== nextProps.columns
-    ) {
-      this.setState({
-        rows: this.createBoard(nextProps)
-      });
+    if (nextProps.status === 'reset') {
+      this.setState({ rows: this.createBoard(nextProps)})
     }
   }
+
   //A click on the cell with a mine loses the game. If not, it opens. Squares next to the opened tile
   //shows total number of mines. If adjacent cells have no mines, open it and check for info.
   openOrFlag(cell) {
@@ -82,24 +77,9 @@ class Board extends React.Component {
           //Reset board if first cell opened is a mine, then open the new board.
           if (current.hasMine && this.props.openCells === 0) {
             console.log('cell already has mine. Restart!');
-            let newRows = this.createBoard(this.props);
-
             this.setState({
-              rows: newRows
+              rows: this.createBoard(this.props)
             }, () => {
-              for (let i = 0; i < this.props.mines; i++) {
-                let randomRow = Math.floor(Math.random() * this.props.rows);
-                let randomCol = Math.floor(Math.random() * this.props.columns);
-
-                let cell = newRows[randomRow][randomCol];
-
-                // to make sure there are no duplicate mines
-                if (cell.hasMine) {
-                  i--;
-                } else {
-                  cell.hasMine = true;
-                }
-              }
               this.openOrFlag(cell);
             });
 
@@ -122,19 +102,17 @@ class Board extends React.Component {
               }
             }
           }
+          this.props.winGame();
         });
       //if right mouse click, plants flags
       } else if (event.button === 2) {
         let flagNumbers = this.state.usedFlags;
-
-        console.log('right mouse click');
-        if (this.props.flags === 1 && this.props.mines === 1 && !current.hasFlag && current.hasMine) {
-          this.props.winGame()
-        } else if (!current.hasFlag) {
+        
+        if (!current.hasFlag) {
           current.hasFlag = true;
           this.props.updateStateCount("flags", "-");
           if (current.hasMine) {
-            this.props.updateStateCount("mines", "-");
+              this.props.updateStateCount("mines", "-");
           }
         } else {
           current.hasFlag = false;
@@ -143,11 +121,11 @@ class Board extends React.Component {
             this.props.updateStateCount("mines", "+");
           }
         }
-
-        this.setState({ rows, usedFlags: flagNumbers })
-      }
+        
+        this.setState({ rows }, () => this.props.winGame())
+      } 
     }
-  }
+  } 
 
   //open cells around the initial tile until a mine is reached.
   findAroundCells(cell) {

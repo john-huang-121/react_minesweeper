@@ -6,7 +6,7 @@ class Minesweeper extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: 'waiting', //waiting, running, lost, won, reset
+      status: 'reset', //waiting, running, lost, won, reset
       rows: 10,
       columns: 10,
       flags: 10,
@@ -26,7 +26,7 @@ class Minesweeper extends React.Component {
   }
 
   componentDidMount() {
-    this.intervals = [];
+    this.intervalName;
   }
 
   timerTick() {
@@ -37,7 +37,7 @@ class Minesweeper extends React.Component {
   }
 
   setInterval(fn, time) {
-    this.intervals.push(setInterval(fn, time));
+    this.intervalName = setInterval(fn, time);
   }
 
   handleCellClick() {
@@ -87,21 +87,26 @@ class Minesweeper extends React.Component {
   }
 
   winGame() {
-    this.setState({ status: 'won' }, () => {
-      alert('Congratulations! You\'ve won!');
-    });
+    if (this.state.flags === 0 && this.state.mines === 0 && this.state.openCells === 90) {
+      this.setState({ status: 'won' }, () => {
+        alert('Congratulations! You\'ve won!');
+      });
+    }
   }
 
   resetGame() {
+    this.intervals = [];
+    clearInterval(this.intervalName);
+
     this.setState({
-      status: 'waiting',
+      status: 'reset',
       rows: 10,
       columns: 10,
       flags: 10,
       mines: 10,
       time: 0,
       openCells: 0,
-    }, () => console.log(this.state));
+    }, () => this.setState({ status: 'waiting'}));
   }
 
   render() {
@@ -109,23 +114,26 @@ class Minesweeper extends React.Component {
     document.addEventListener('contextmenu', event => event.preventDefault());
 
     return (
-      <div className='game-browser'>
-        <h1 className='game-title'>Minesweeper</h1>
-        <BoardHead time={this.state.time} 
-          flagCount={this.state.flags}
-          resetGame={this.resetGame}
-        />
-        <Board rows={this.state.rows}
-          columns={this.state.columns}
-          mines={this.state.mines}
-          flags={this.state.flags}
-          openCells={this.state.openCells}
-          status={this.state.status}
-          openCellClick={this.handleCellClick}
-          loseGame={this.loseGame}
-          winGame={this.winGame}
-          updateStateCount={this.updateStateCount}
-        />
+      <div className='game-background'>
+        <div className='game-browser'>
+          <h1 className='game-title'>Minesweeper</h1>
+          <BoardHead time={this.state.time} 
+            flagCount={this.state.flags}
+            resetGame={this.resetGame}
+            status={this.state.status}
+            />
+          <Board rows={this.state.rows}
+            columns={this.state.columns}
+            mines={this.state.mines}
+            flags={this.state.flags}
+            openCells={this.state.openCells}
+            status={this.state.status}
+            openCellClick={this.handleCellClick}
+            loseGame={this.loseGame}
+            winGame={this.winGame}
+            updateStateCount={this.updateStateCount}
+            />
+        </div>
       </div>
     );
   }
