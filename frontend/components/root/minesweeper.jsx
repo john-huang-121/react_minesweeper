@@ -20,7 +20,9 @@ class Minesweeper extends React.Component {
     this.setInterval = this.setInterval.bind(this);
     this.handleCellClick = this.handleCellClick.bind(this);
     this.loseGame = this.loseGame.bind(this);
+    this.winGame = this.winGame.bind(this);
     this.resetGame = this.resetGame.bind(this);
+    this.updateStateCount = this.updateStateCount.bind(this);
   }
 
   componentDidMount() {
@@ -51,12 +53,42 @@ class Minesweeper extends React.Component {
     this.setState(previousState => {
       return { openCells: previousState.openCells + 1 };
     });
+    
+  }
 
+  updateStateCount(whichState, updateValue) {
+    if (whichState === 'flags') {
+      let currentFlags = this.state.flags;
+      
+      if (updateValue === "+") {
+        currentFlags++;
+      } else if (updateValue === "-") {
+        currentFlags--;
+      }
+      
+      this.setState({ flags: currentFlags });
+    } else if (whichState === 'mines') {
+      let currentMines = this.state.mines;
+
+      if (updateValue === "+") {
+        currentMines++;
+      } else if (updateValue === "-") {
+        currentMines--;
+      }
+
+      this.setState({ mines: currentMines })
+    }
   }
 
   loseGame() {
     this.setState({ status: 'lost' }, () => {
+      alert('You lose!')
+    });
+  }
 
+  winGame() {
+    this.setState({ status: 'won' }, () => {
+      alert('Congratulations! You\'ve won!');
     });
   }
 
@@ -73,6 +105,9 @@ class Minesweeper extends React.Component {
   }
 
   render() {
+    //this prevents the right click toolbar from showing up
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
     return (
       <div className='game-browser'>
         <h1 className='game-title'>Minesweeper</h1>
@@ -83,10 +118,13 @@ class Minesweeper extends React.Component {
         <Board rows={this.state.rows}
           columns={this.state.columns}
           mines={this.state.mines}
+          flags={this.state.flags}
           openCells={this.state.openCells}
           status={this.state.status}
           openCellClick={this.handleCellClick}
           loseGame={this.loseGame}
+          winGame={this.winGame}
+          updateStateCount={this.updateStateCount}
         />
       </div>
     );

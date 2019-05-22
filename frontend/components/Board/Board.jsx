@@ -6,10 +6,10 @@ class Board extends React.Component {
     super(props);
 
     this.state = {
-      rows: this.createBoard(props)
+      rows: this.createBoard(props),
     };
 
-    this.open = this.open.bind(this);
+    this.openOrFlag = this.openOrFlag.bind(this);
     this.findMines = this.findMines.bind(this);
     this.findAroundCells = this.findAroundCells.bind(this);
   }
@@ -30,7 +30,6 @@ class Board extends React.Component {
           hasFlag: false
         });
       }
-
     }
 
     // after we create the board, we add our mines
@@ -48,7 +47,6 @@ class Board extends React.Component {
         cell.hasMine = true;
       }
     }
-
     return board;
   }
 
@@ -65,67 +63,90 @@ class Board extends React.Component {
   }
   //A click on the cell with a mine loses the game. If not, it opens. Squares next to the opened tile
   //shows total number of mines. If adjacent cells have no mines, open it and check for info.
-  open(cell) {
-    //the promise of findMines that are then invoked to find the tiles
-    // eslint-disable-next-line no-undef
-    let asyncCountMines = new Promise(resolve => {
-      let mines = this.findMines(cell);
-      resolve(mines); //promise will resolve the mines
-    });
+  openOrFlag(cell) {
+    let rows = this.state.rows;
+    let current = rows[cell.y][cell.x];
 
-    asyncCountMines.then(numberOfMines => {
-
-      let rows = this.state.rows;
-      let current = rows[cell.y][cell.x];
-
-      //Reset board if first cell opened is a mine, then open the new board.
-      if (this.props.status === 'lost') {
-        //currently no code, freeze state so no more button clicks
-      } else if (current.hasMine && this.props.openCells === 0) {
-        console.log('cell already has mine. Restart!');
-        let newRows = this.createBoard(this.props);
-
-        this.setState({
-          rows: newRows
-        }, () => {
-
-          for (let i = 0; i < props.mines; i++) {
-            let randomRow = Math.floor(Math.random() * props.rows);
-            let randomCol = Math.floor(Math.random() * props.columns);
-
-            let cell = board[randomRow][randomCol];
-
-            // to make sure there are no duplicate mines
-            if (cell.hasMine) {
-              i--;
-            } else {
-              cell.hasMine = true;
-            }
-          }
-          this.open(cell);
+    if (this.props.status === 'lost' || this.props.status === 'won') {
+      alert('Play again? Click Restart!')
+    } else {
+      if (event.button === 0) {
+        //the promise of findMines that are then invoked to find the tiles
+        // eslint-disable-next-line no-undef
+        let asyncCountMines = new Promise(resolve => {
+          resolve(this.findMines(cell)); //promise will resolve the mines and return integer
         });
 
-      } else if (current.hasMine) {
+        asyncCountMines.then(numberOfMines => {
 
-        current.isOpen = true;
-        this.props.loseGame();
-      
-      } else {
-        if (!cell.hasFlag && !cell.isOpen) {
-          this.props.openCellClick();
+          //Reset board if first cell opened is a mine, then open the new board.
+          if (current.hasMine && this.props.openCells === 0) {
+            console.log('cell already has mine. Restart!');
+            let newRows = this.createBoard(this.props);
 
-          current.isOpen = true;
-          current.count = numberOfMines;
+            this.setState({
+              rows: newRows
+            }, () => {
+              for (let i = 0; i < this.props.mines; i++) {
+                let randomRow = Math.floor(Math.random() * this.props.rows);
+                let randomCol = Math.floor(Math.random() * this.props.columns);
 
-          this.setState({ rows });
+                let cell = newRows[randomRow][randomCol];
 
-          if (!current.hasMine && numberOfMines === 0) {
-            this.findAroundCells(cell);
+                // to make sure there are no duplicate mines
+                if (cell.hasMine) {
+                  i--;
+                } else {
+                  cell.hasMine = true;
+                }
+              }
+              this.openOrFlag(cell);
+            });
+
+          } else if (current.hasMine) {
+
+            current.isOpen = true;
+            this.props.loseGame();
+          
+          } else {
+            if (!cell.hasFlag && !cell.isOpen) {
+              this.props.openCellClick();
+
+              current.isOpen = true;
+              current.count = numberOfMines;
+
+              this.setState({ rows });
+
+              if (!current.hasMine && numberOfMines === 0) {
+                this.findAroundCells(cell);
+              }
+            }
+          }
+        });
+      //if right mouse click, plants flags
+      } else if (event.button === 2) {
+        let flagNumbers = this.state.usedFlags;
+
+        console.log('right mouse click');
+        if (this.props.flags === 1 && this.props.mines === 1 && !current.hasFlag && current.hasMine) {
+          this.props.winGame()
+        } else if (!current.hasFlag) {
+          current.hasFlag = true;
+          this.props.updateStateCount("flags", "-");
+          if (current.hasMine) {
+            this.props.updateStateCount("mines", "-");
+          }
+        } else {
+          current.hasFlag = false;
+          this.props.updateStateCount("flags", "+");
+          if (current.hasMine) {
+            this.props.updateStateCount("mines", "+");
           }
         }
-      }
 
-    });
+        this.setState({ rows, usedFlags: flagNumbers })
+      }
+    }
   }
 
   //open cells around the initial tile until a mine is reached.
@@ -145,7 +166,7 @@ class Board extends React.Component {
               !(rows[cell.y + row][cell.x + col].hasMine) &&
               !(rows[cell.y + row][cell.x + col].isOpen)
             ) {
-              this.open(rows[cell.y + row][cell.x + col]);
+              this.openOrFlag(rows[cell.y + row][cell.x + col]);
             }
           }
         }
@@ -186,8 +207,8 @@ class Board extends React.Component {
         <Row
           key={index}
           cells={row}
-          open={this.open}
-
+          openOrFlag={this.openOrFlag}
+          mouseClick={this.props.mouseClick}
           />
       );
     });
